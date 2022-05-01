@@ -9,11 +9,6 @@ export class Gestor {
 
   }
   
-
-
-  verDir(user: string) {
-
-  }
   /**
    * Funcion que añade una nueva nota a la lista
    * @param user usuario creador de esa nota

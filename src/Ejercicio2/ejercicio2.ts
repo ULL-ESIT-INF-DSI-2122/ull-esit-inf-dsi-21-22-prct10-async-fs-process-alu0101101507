@@ -13,14 +13,12 @@ function pipe(filename: string, word: string){
     const cat = child.spawn('cat', [filename]);
     const grep = child.spawn('grep', ['-c', word]);
     cat.stdout.pipe(grep.stdin);
-
     let grepOutput = '';
     grep.stdout.on('data', (piece) => {
       grepOutput += piece;
     });
-  
     grep.on('close', () => {
-      let x: number = +grepOutput
+      const x: number = +grepOutput
       if(x > 0) {
         process.stdout.write(chalk.yellow(`La palabra ${word} se encuentra en ${x} lineas del fichero`));
       } else {
@@ -41,22 +39,18 @@ function nopipe(filename: string, word: string){
   if (fs.existsSync(filename)){
     const cat = child.spawn('cat', [filename]);
     const grep = child.spawn('grep', ['-c', word]);
-
     cat.stdout.on("data", (data) => {
       grep.stdin.write(data);
     });
-
     cat.on("close", () => {
       grep.stdin.end();
     });
-
     let grepOutput = '';
     grep.stdout.on('data', (piece) => {
       grepOutput += piece;
     });
-
     grep.on('close', () => {
-      let x: number = +grepOutput
+      const x: number = +grepOutput
       if(x > 0){
         console.log(chalk.yellow(`La palabra ${word} se encuentra en ${x} lineas del fichero`));
       } else {
@@ -89,7 +83,7 @@ yargs.command({
   handler(argv) {
     if (typeof argv.file === 'string' &&
         typeof argv.word === 'string' &&
-        process.argv.length == 5) {
+        process.argv.length === 5) {
         console.log(pipe(argv.file, argv.word))
     } else {
       console.log(chalk.red("Ha intoducido un numero de parametros erroneos por encima de los permitidos, solo puede introducir 5 parametros:"))
@@ -119,7 +113,7 @@ yargs.command({
   handler(argv) {
     if (typeof argv.file === 'string' &&
         typeof argv.word === 'string' &&
-        process.argv.length == 5) {
+        process.argv.length === 5) {
         console.log(nopipe(argv.file, argv.word))
     } else {
       console.log(chalk.red("Ha intoducido un numero de parametros erroneos por encima de los permitidos, solo puede introducir 5 parametros:"))
