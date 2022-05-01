@@ -1,0 +1,202 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507</title><meta name="description" content="Documentation for ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507 </h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography"><p><a href="https://coveralls.io/github/ULL-ESIT-INF-DSI-2122/ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507?branch=main"><img src="https://coveralls.io/repos/github/ULL-ESIT-INF-DSI-2122/ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507/badge.svg?branch=main" alt="Coverage Status"></a> <a href="https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507"><img src="https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct10-async-fs-process-alu0101101507&metric=alert_status" alt="Quality Gate Status"></a></p>
+
+<a href="#práctica-10---sistema-de-ficheros-y-creación-de-procesos-en-nodejs" id="práctica-10---sistema-de-ficheros-y-creación-de-procesos-en-nodejs" style="color: inherit; text-decoration: none;">
+  <h1>Práctica 10 - Sistema de ficheros y creación de procesos en Node.js</h1>
+</a>
+
+<a href="#ejercicio-1" id="ejercicio-1" style="color: inherit; text-decoration: none;">
+  <h2>Ejercicio 1</h2>
+</a>
+<p>Para este ejercicio hemos de realizar una traza de ejecucion paso a paso mostrando el contenido de la pila de llamadas, el registro de eventos de la api y la cola de manejadores, usando como ejemplo el siguiente codigo:</p>
+<pre><code class="language-typescript"><span class="hl-0">import</span><span class="hl-1"> {</span><span class="hl-2">access</span><span class="hl-1">, </span><span class="hl-2">constants</span><span class="hl-1">, </span><span class="hl-2">watch</span><span class="hl-1">} </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;fs&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-2">process</span><span class="hl-1">.</span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">length</span><span class="hl-1"> !== </span><span class="hl-4">3</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">&#39;Please, specify a file&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">} </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">filename</span><span class="hl-1"> = </span><span class="hl-2">process</span><span class="hl-1">.</span><span class="hl-2">argv</span><span class="hl-1">[</span><span class="hl-4">2</span><span class="hl-1">];</span><br/><br/><span class="hl-1">  </span><span class="hl-5">access</span><span class="hl-1">(</span><span class="hl-2">filename</span><span class="hl-1">, </span><span class="hl-2">constants</span><span class="hl-1">.</span><span class="hl-7">F_OK</span><span class="hl-1">, (</span><span class="hl-2">err</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-2">err</span><span class="hl-1">) {</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">`File </span><span class="hl-6">${</span><span class="hl-2">filename</span><span class="hl-6">}</span><span class="hl-3"> does not exist`</span><span class="hl-1">);</span><br/><span class="hl-1">    } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">`Starting to watch file </span><span class="hl-6">${</span><span class="hl-2">filename</span><span class="hl-6">}</span><span class="hl-3">`</span><span class="hl-1">);</span><br/><br/><span class="hl-1">      </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">watcher</span><span class="hl-1"> = </span><span class="hl-5">watch</span><span class="hl-1">(</span><span class="hl-2">process</span><span class="hl-1">.</span><span class="hl-2">argv</span><span class="hl-1">[</span><span class="hl-4">2</span><span class="hl-1">]);</span><br/><br/><span class="hl-1">      </span><span class="hl-2">watcher</span><span class="hl-1">.</span><span class="hl-5">on</span><span class="hl-1">(</span><span class="hl-3">&#39;change&#39;</span><span class="hl-1">, () </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">`File </span><span class="hl-6">${</span><span class="hl-2">filename</span><span class="hl-6">}</span><span class="hl-3"> has been modified somehow`</span><span class="hl-1">);</span><br/><span class="hl-1">      });</span><br/><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">`File </span><span class="hl-6">${</span><span class="hl-2">filename</span><span class="hl-6">}</span><span class="hl-3"> is no longer watched`</span><span class="hl-1">);</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  });</span><br/><span class="hl-1">}</span>
+</code></pre>
+<p>TRAZA:</p>
+<p>Paso 1:</p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Access(comprobar el fichero)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>console.log(Ver el fichero)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Primero se pasa a la pilla de llamadas la ejecucion del access y se comprueba si existe el fichero y empieza a observar el fichero y se muestra por pantalla el <code>console.log(</code>Starting to watch file ${filename}<code>)</code>, es decir eso entra en la pila lo primero y como solo esta ello sale de la pila instantaneamente mostrando por terminal ese mensaje.</p>
+<p>Paso 2: </p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>const watcher = watch(process.argv[2])</td>
+<td>watcher.on(&#39;change&#39;, () )</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Ahora se crea el atributo watcher que sera usado por el metodo watcher.on que pasara a la cola de manejadores (para ser procesao mas tarde por el bucle de eventos lo cual lo mandara a la pila de llamadas mas adelante)</p>
+<p>Paso 3: </p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>console.log(<code>File ${filename} is no longer watched</code>)</td>
+<td></td>
+<td>watcher.on(&#39;change&#39;, () )</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Ahora entra en la pila de llamadas es <code>console.log(</code>File ${filename} is no longer watched<code>)</code> y por como funciona el bucle de eventos se nos sacara primero lo que hay en la pilla de llamadas, entonces se mostrara por terminal el mensaje del console.log y despues se procesara lo que se encuentra en la cola de manejadores</p>
+<p>Paso 4:</p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>watcher.on(&#39;change&#39;, () )</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Ahora el bucle de eventos pasa la funcion que se encuentra en la cola de manejadores a la pila de llamadas para mostrar su resultado, pero una vez mostrado el resultado lo volvera a mandar a la cola de manejadores ya que la funcion watch se va a quedar permanentemente mirando el fichero hasta que el programa se termine, por tanto seguirian los siguientes pasos:</p>
+<p>Paso 5: </p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td>watcher.on(&#39;change&#39;, () )</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>y asi sucesivamente hasta que cerremos el programa, es decir que mientras se modifique el fichero seguira mostrandoce el console.log de dentro del metodo <code>watcher.on()</code>.</p>
+<p><strong>¿Qué hace la función access?</strong></p>
+<p>La funcion access lo que nos permite es conocer los permisos que tenemos sobre un fichero o directorio o si el fichero existe como es este caso, ya que tenemos como modo el constants.F_OK que lo que nos permite averiguar no son los permisos del fichero si no simplemente si el fichero existe o no.</p>
+<p><strong>¿Para qué sirve el objeto constants?</strong></p>
+<p>El objeto constants sirve como un enum en el cual se enumeran los permisos que se tienen con cada modo, es decir constant.R_OK tiene un flag que nos permite leer un fichero mediante los procesos de llamada, asi pues hay muchos otros modos, pero en resumen es un enum el cual tiene enlistados los permisos y mediante los modos se escoge los permisos a comprobar por cada proceso</p>
+
+<a href="#ejercicio-2" id="ejercicio-2" style="color: inherit; text-decoration: none;">
+  <h2>Ejercicio 2</h2>
+</a>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-function"><a href="modules.html#add" class="tsd-kind-icon">add</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
