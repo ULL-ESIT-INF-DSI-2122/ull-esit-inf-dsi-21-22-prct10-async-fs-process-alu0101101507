@@ -36,58 +36,43 @@ TRAZA:
 Paso 1:
 
 
-|  Pila de llamada            | Registros de eventos de la api  | Cola de manejadores  |
-|-----------------------------|---------------------------------|----------------------|
-|Access(comprobar el fichero) |                                 |                      |
-|console.log(Ver el fichero)  |                                 |                      |
-|                             |                                 |                      |
-|                             |                                 |                      |
-|                             |                                 |                      |
+|  Pila de llamada              | Registros de eventos de la api  | Cola de manejadores  |
+|----------------------------   |---------------------------------|----------------------|
+|if (process.argv.lengths != 3) |                                 |                      |
 
-Primero se pasa a la pilla de llamadas la ejecucion del access y se comprueba si existe el fichero y empieza a observar el fichero y se muestra por pantalla el `console.log(`Starting to watch file ${filename}`)`, es decir eso entra en la pila lo primero y como solo esta ello sale de la pila instantaneamente mostrando por terminal ese mensaje.
+Primero entra a la pila de llamadas la comprovacion de la longuitud de parametros por teminal, lo cual si no se cumplu mostrara el error de especificar un fichero si no seguira adelante
 
 Paso 2: 
 
 
-|  Pila de llamada            | Registros de eventos de la api       | Cola de manejadores      |
-|-----------------------------|--------------------------------------|--------------------------|
-|                             |const watcher = watch(process.argv[2])| watcher.on('change', () )|
-|                             |                                      |                          |
-|                             |                                      |                          |
-|                             |                                      |                          |
-|                             |                                      |                          |
+|  Pila de llamada                | Registros de eventos de la api       | Cola de manejadores      |
+|-----------------------------    |--------------------------------------|--------------------------|
+|const filename = process.argv[2] |                                      |                          |
 
-
-Ahora se crea el atributo watcher que sera usado por el metodo watcher.on que pasara a la cola de manejadores (para ser procesao mas tarde por el bucle de eventos lo cual lo mandara a la pila de llamadas mas adelante)
-
+Seguira la asignaicon del fichero a la variable filename con el atributo que se pasa por paramtro en la posicion de argv[2]
 
 Paso 3: 
 
 
 |  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores      |
 |-------------------------------------------------------|--------------------------------------|--------------------------|
-|console.log(`File ${filename} is no longer watched`)   |                                      | watcher.on('change', () )|
+|access(filename, constants.F_OK, (err)                 |                                      |                          |
 |                                                       |                                      |                          |
 |                                                       |                                      |                          |
 |                                                       |                                      |                          |
 |                                                       |                                      |                          |
 
-
-Ahora entra en la pila de llamadas es `console.log(`File ${filename} is no longer watched`)` y por como funciona el bucle de eventos se nos sacara primero lo que hay en la pilla de llamadas, entonces se mostrara por terminal el mensaje del console.log y despues se procesara lo que se encuentra en la cola de manejadores
+Ahora entra el access a la pila de llamada, al ser un metodo dado por la api pasara al registro de evento de la api para procesarce
 
 Paso 4:
 
 
 |  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores      |
 |-------------------------------------------------------|--------------------------------------|--------------------------|
-|watcher.on('change', () )                              |                                      |                          |
-|                                                       |                                      |                          |
-|                                                       |                                      |                          |
-|                                                       |                                      |                          |
-|                                                       |                                      |                          |
+|                                                       |access(filename, constants.F_OK, (err)|                          |
 
 
-Ahora el bucle de eventos pasa la funcion que se encuentra en la cola de manejadores a la pila de llamadas para mostrar su resultado, pero una vez mostrado el resultado lo volvera a mandar a la cola de manejadores ya que la funcion watch se va a quedar permanentemente mirando el fichero hasta que el programa se termine, por tanto seguirian los siguientes pasos:
+Al pasar esto aqui es donde se procesara el acces mandando a la cola de manejadores a las funciones que requieran de su uso
 
 
 Paso 5: 
@@ -95,14 +80,66 @@ Paso 5:
 
 |  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores      |
 |-------------------------------------------------------|--------------------------------------|--------------------------|
-|                                                       |                                      | watcher.on('change', () )|
-|                                                       |                                      |                          |
-|                                                       |                                      |                          |
-|                                                       |                                      |                          |
-|                                                       |                                      |                          |
+|console.log(`Starting to watch file ${filename}`);     |                                      |                          |
 
-y asi sucesivamente hasta que cerremos el programa, es decir que mientras se modifique el fichero seguira mostrandoce el console.log de dentro del metodo `watcher.on()`.
 
+En la pila de llamadas se pondria el console.log mostrado y seria sacado de la pila instantanemanete mostrando por pantalla
+
+Paso 6: 
+
+|  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores      |
+|-------------------------------------------------------|--------------------------------------|--------------------------|
+| const watcher = watch(process.argv[2]);               |                                      |                          |
+
+
+
+En este paso es donde se asignara el fichero a observar por el metodo watch() por lo que entrara en la pilla de llamadas y saldra de ella con la asignacion ya realizada
+
+Paso 7:
+
+|  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores        |
+|-------------------------------------------------------|--------------------------------------|-------------------------   |
+|                                                       |                                      |watcher.on('change', () => {|
+
+
+En este paso el metodo acces pasara a la cola de manejadores la funcion watcher.on que es la que nos permitira ver si el fichero ha sido modificado de alguna manera
+
+
+Paso 8:
+
+|  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores        |
+|-------------------------------------------------------|--------------------------------------|-------------------------   |
+|console.log(`File ${filename} is no longer watched`);  |                                      |watcher.on('change', () => {|
+
+Aqui al tratarse de un proceso asincrono todo el programa, entra en la pila de llamadas el console.log(`File ${filename} is no longer watched`); lo que hace que s emuestre antes de acabar y que el programa seguira escuchando hasta que no decidamos cerrar el programa, pero al tratarce de un proceso asincrono este mensaje se procesa y sale antes de la pila de llamadas que el resultado del watcher.on()
+
+Paso 9: 
+
+|  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores        |
+|-------------------------------------------------------|--------------------------------------|-------------------------   |
+|watcher.on('change', () => {                           |                                      |                            |
+
+
+En este punto de la cola de manejadores mediante el **bucle de eventos** se pasa el resultado del metodo watcher.on a la pila de llamadas para que salga de ahi y muestre por pantalla como se ha modificado el fichero
+
+Paso 10:
+
+|  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores        |
+|-------------------------------------------------------|--------------------------------------|-------------------------   |
+|                                                       |watcher.on('change', () => {          |                            |
+
+
+Aqui se pasa la funcion watcher.on de la pila de llamadas al registro de eventos de la api ya que todavia tiene que seguir haciendo una funcion
+
+Paso 11: 
+
+
+|  Pila de llamada                                      | Registros de eventos de la api       | Cola de manejadores        |
+|-------------------------------------------------------|--------------------------------------|-------------------------   |
+|                                                       |                                      |watcher.on('change', () => {|
+
+
+Ahora mediante el **bucle de eventos** se vuelve a mandar a la cola de manejadores a la funcion watcher.on ya que ha de seguir observando el fichero ante el posible cambio que ocurra y entrara en un movimeinto ciclico hasta que se decida cerrar el programa
 
 **¿Qué hace la función access?**
 
