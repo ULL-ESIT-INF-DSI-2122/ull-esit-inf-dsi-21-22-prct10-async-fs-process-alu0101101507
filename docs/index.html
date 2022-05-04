@@ -21,32 +21,12 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>Access(comprobar el fichero)</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>console.log(Ver el fichero)</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
+<td>if (process.argv.lengths != 3)</td>
 <td></td>
 <td></td>
 </tr>
 </tbody></table>
-<p>Primero se pasa a la pilla de llamadas la ejecucion del access y se comprueba si existe el fichero y empieza a observar el fichero y se muestra por pantalla el <code>console.log(</code>Starting to watch file ${filename}<code>)</code>, es decir eso entra en la pila lo primero y como solo esta ello sale de la pila instantaneamente mostrando por terminal ese mensaje.</p>
+<p>Primero entra a la pila de llamadas la comprovacion de la longuitud de parametros por teminal, lo cual si no se cumplu mostrara el error de especificar un fichero si no seguira adelante</p>
 <p>Paso 2: </p>
 <table>
 <thead>
@@ -57,32 +37,12 @@
 </tr>
 </thead>
 <tbody><tr>
-<td></td>
-<td>const watcher = watch(process.argv[2])</td>
-<td>watcher.on(&#39;change&#39;, () )</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
+<td>const filename = process.argv[2]</td>
 <td></td>
 <td></td>
 </tr>
 </tbody></table>
-<p>Ahora se crea el atributo watcher que sera usado por el metodo watcher.on que pasara a la cola de manejadores (para ser procesao mas tarde por el bucle de eventos lo cual lo mandara a la pila de llamadas mas adelante)</p>
+<p>Seguira la asignaicon del fichero a la variable filename con el atributo que se pasa por paramtro en la posicion de argv[2]</p>
 <p>Paso 3: </p>
 <table>
 <thead>
@@ -93,9 +53,9 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>console.log(<code>File ${filename} is no longer watched</code>)</td>
+<td>access(filename, constants.F_OK, (err)</td>
 <td></td>
-<td>watcher.on(&#39;change&#39;, () )</td>
+<td></td>
 </tr>
 <tr>
 <td></td>
@@ -118,7 +78,7 @@
 <td></td>
 </tr>
 </tbody></table>
-<p>Ahora entra en la pila de llamadas es <code>console.log(</code>File ${filename} is no longer watched<code>)</code> y por como funciona el bucle de eventos se nos sacara primero lo que hay en la pilla de llamadas, entonces se mostrara por terminal el mensaje del console.log y despues se procesara lo que se encuentra en la cola de manejadores</p>
+<p>Ahora entra el access a la pila de llamada, al ser un metodo dado por la api pasara al registro de evento de la api para procesarce</p>
 <p>Paso 4:</p>
 <table>
 <thead>
@@ -129,33 +89,45 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>watcher.on(&#39;change&#39;, () )</td>
 <td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
+<td>access(filename, constants.F_OK, (err)</td>
 <td></td>
 </tr>
+</tbody></table>
+<p>Al pasar esto aqui es donde se procesara el acces mandando a la cola de manejadores a las funciones que requieran de su uso</p>
+<p>Paso 5: </p>
+<table>
+<thead>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
 </tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
+</thead>
+<tbody><tr>
+<td>console.log(<code>Starting to watch file ${filename}</code>);</td>
 <td></td>
 <td></td>
 </tr>
 </tbody></table>
-<p>Ahora el bucle de eventos pasa la funcion que se encuentra en la cola de manejadores a la pila de llamadas para mostrar su resultado, pero una vez mostrado el resultado lo volvera a mandar a la cola de manejadores ya que la funcion watch se va a quedar permanentemente mirando el fichero hasta que el programa se termine, por tanto seguirian los siguientes pasos:</p>
-<p>Paso 5: </p>
+<p>En la pila de llamadas se pondria el console.log mostrado y seria sacado de la pila instantanemanete mostrando por pantalla</p>
+<p>Paso 6: </p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>const watcher = watch(process.argv[2]);</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>En este paso es donde se asignara el fichero a observar por el metodo watch() por lo que entrara en la pilla de llamadas y saldra de ella con la asignacion ya realizada</p>
+<p>Paso 7:</p>
 <table>
 <thead>
 <tr>
@@ -167,36 +139,112 @@
 <tbody><tr>
 <td></td>
 <td></td>
-<td>watcher.on(&#39;change&#39;, () )</td>
+<td>watcher.on(&#39;change&#39;, () =&gt; {</td>
 </tr>
+</tbody></table>
+<p>En este paso el metodo acces pasara a la cola de manejadores la funcion watcher.on que es la que nos permitira ver si el fichero ha sido modificado de alguna manera</p>
+<p>Paso 8:</p>
+<table>
+<thead>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
 </tr>
-<tr>
+</thead>
+<tbody><tr>
+<td>console.log(<code>File ${filename} is no longer watched</code>);</td>
 <td></td>
-<td></td>
-<td></td>
+<td>watcher.on(&#39;change&#39;, () =&gt; {</td>
 </tr>
+</tbody></table>
+<p>Aqui al tratarse de un proceso asincrono todo el programa, entra en la pila de llamadas el console.log(<code>File ${filename} is no longer watched</code>); lo que hace que s emuestre antes de acabar y que el programa seguira escuchando hasta que no decidamos cerrar el programa, pero al tratarce de un proceso asincrono este mensaje se procesa y sale antes de la pila de llamadas que el resultado del watcher.on()</p>
+<p>Paso 9: </p>
+<table>
+<thead>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
 </tr>
-<tr>
-<td></td>
+</thead>
+<tbody><tr>
+<td>watcher.on(&#39;change&#39;, () =&gt; {</td>
 <td></td>
 <td></td>
 </tr>
 </tbody></table>
-<p>y asi sucesivamente hasta que cerremos el programa, es decir que mientras se modifique el fichero seguira mostrandoce el console.log de dentro del metodo <code>watcher.on()</code>.</p>
+<p>En este punto de la cola de manejadores mediante el <strong>bucle de eventos</strong> se pasa el resultado del metodo watcher.on a la pila de llamadas para que salga de ahi y muestre por pantalla como se ha modificado el fichero</p>
+<p>Paso 10:</p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>watcher.on(&#39;change&#39;, () =&gt; {</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>Aqui se pasa la funcion watcher.on de la pila de llamadas al registro de eventos de la api ya que todavia tiene que seguir haciendo una funcion</p>
+<p>Paso 11: </p>
+<table>
+<thead>
+<tr>
+<th>Pila de llamada</th>
+<th>Registros de eventos de la api</th>
+<th>Cola de manejadores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td>watcher.on(&#39;change&#39;, () =&gt; {</td>
+</tr>
+</tbody></table>
+<p>Ahora mediante el <strong>bucle de eventos</strong> se vuelve a mandar a la cola de manejadores a la funcion watcher.on ya que ha de seguir observando el fichero ante el posible cambio que ocurra y entrara en un movimeinto ciclico hasta que se decida cerrar el programa</p>
 <p><strong>¿Qué hace la función access?</strong></p>
 <p>La funcion access lo que nos permite es conocer los permisos que tenemos sobre un fichero o directorio o si el fichero existe como es este caso, ya que tenemos como modo el constants.F_OK que lo que nos permite averiguar no son los permisos del fichero si no simplemente si el fichero existe o no.</p>
 <p><strong>¿Para qué sirve el objeto constants?</strong></p>
 <p>El objeto constants sirve como un enum en el cual se enumeran los permisos que se tienen con cada modo, es decir constant.R_OK tiene un flag que nos permite leer un fichero mediante los procesos de llamada, asi pues hay muchos otros modos, pero en resumen es un enum el cual tiene enlistados los permisos y mediante los modos se escoge los permisos a comprobar por cada proceso</p>
 
 <a href="#ejercicio-2" id="ejercicio-2" style="color: inherit; text-decoration: none;">
-  <h2>Ejercicio 2</h2>
+  <h1>Ejercicio 2</h1>
 </a>
+<p>Para este ejercicio hemos de crear un programa que devuelva el numero de ocurrecias de una palabra en un fichero de texto, es decir el numero de lineas en el que se encuentra esa palabra, dando tanto el fichero como la palabra a buscar por terminal por el usuario.</p>
+<p>Para lo anterior este programa se nos pide que realicemos la busqueda y digamos el numero de la repeticion de la palabra en un fichero de dos maneras,  la primera manera sera con el metodo pipe() quedando de la siguiente manera:</p>
+<pre><code class="language-typescript"><span class="hl-6">function</span><span class="hl-1"> </span><span class="hl-5">pipe</span><span class="hl-1">(</span><span class="hl-2">filename</span><span class="hl-1">: </span><span class="hl-8">string</span><span class="hl-1">, </span><span class="hl-2">word</span><span class="hl-1">: </span><span class="hl-8">string</span><span class="hl-1">){</span><br/><span class="hl-1">  </span><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-2">fs</span><span class="hl-1">.</span><span class="hl-5">existsSync</span><span class="hl-1">(</span><span class="hl-2">filename</span><span class="hl-1">)){</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">cat</span><span class="hl-1"> = </span><span class="hl-2">child</span><span class="hl-1">.</span><span class="hl-5">spawn</span><span class="hl-1">(</span><span class="hl-3">&#39;cat&#39;</span><span class="hl-1">, [</span><span class="hl-2">filename</span><span class="hl-1">]);</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">grep</span><span class="hl-1"> = </span><span class="hl-2">child</span><span class="hl-1">.</span><span class="hl-5">spawn</span><span class="hl-1">(</span><span class="hl-3">&#39;grep&#39;</span><span class="hl-1">, [</span><span class="hl-3">&#39;-c&#39;</span><span class="hl-1">, </span><span class="hl-2">word</span><span class="hl-1">]);</span><br/><span class="hl-1">    </span><span class="hl-2">cat</span><span class="hl-1">.</span><span class="hl-2">stdout</span><span class="hl-1">.</span><span class="hl-5">pipe</span><span class="hl-1">(</span><span class="hl-2">grep</span><span class="hl-1">.</span><span class="hl-2">stdin</span><span class="hl-1">);</span><br/><br/><span class="hl-1">    </span><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-2">grepOutput</span><span class="hl-1"> = </span><span class="hl-3">&#39;&#39;</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-2">grep</span><span class="hl-1">.</span><span class="hl-2">stdout</span><span class="hl-1">.</span><span class="hl-5">on</span><span class="hl-1">(</span><span class="hl-3">&#39;data&#39;</span><span class="hl-1">, (</span><span class="hl-2">piece</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">grepOutput</span><span class="hl-1"> += </span><span class="hl-2">piece</span><span class="hl-1">;</span><br/><span class="hl-1">    });</span><br/><span class="hl-1">  </span><br/><span class="hl-1">    </span><span class="hl-2">grep</span><span class="hl-1">.</span><span class="hl-5">on</span><span class="hl-1">(</span><span class="hl-3">&#39;close&#39;</span><span class="hl-1">, () </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-2">x</span><span class="hl-1">: </span><span class="hl-8">number</span><span class="hl-1"> = +</span><span class="hl-2">grepOutput</span><br/><span class="hl-1">      </span><span class="hl-0">if</span><span class="hl-1">(</span><span class="hl-2">x</span><span class="hl-1"> &gt; </span><span class="hl-4">0</span><span class="hl-1">) {</span><br/><span class="hl-1">        </span><span class="hl-2">process</span><span class="hl-1">.</span><span class="hl-2">stdout</span><span class="hl-1">.</span><span class="hl-5">write</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">yellow</span><span class="hl-1">(</span><span class="hl-3">`La palabra </span><span class="hl-6">${</span><span class="hl-2">word</span><span class="hl-6">}</span><span class="hl-3"> se encuentra en </span><span class="hl-6">${</span><span class="hl-2">x</span><span class="hl-6">}</span><span class="hl-3"> lineas del fichero`</span><span class="hl-1">));</span><br/><span class="hl-1">      } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">`La palabra </span><span class="hl-6">${</span><span class="hl-2">word</span><span class="hl-6">}</span><span class="hl-3"> no se encuentra en el fichero`</span><span class="hl-1">));</span><br/><span class="hl-1">      }</span><br/><span class="hl-1">    });</span><br/><span class="hl-1">  } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">&#39;El fichero no existe&#39;</span><span class="hl-1">))</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span>
+</code></pre>
+<p>En esta funcion definiremos los dos procesos hijos, cat y grep, con el metodo spawn, y al metodo grep lo definiremos con la opcion -c ya que esta opcion nos muestra el numero de lineas en las que se encuentra la palabra que queremos buscar el numero de lineas en las que se encuentra dicha palabra, despues realizamos la union de ambos procesos con el pipe lo que nos permite comunicar la salida del cat (cat.stdout) con la entrada del proceso grep (grep.stdin), mas tarde hemos de almacenar la salida de grep en una string auxiliar y ddespues mediante grep.on mostraremos en la llamada de <code>close</code> si el numero de ocurrecias es mayor que 0 entonces se mostrara en cuantas lineas se encuentra esa palabra, si no es mayor que 0 entonces implica que esa palabra no se encuentra en el fichero.</p>
+<p>Despues tenemos la funcion que realizara lo mismo que la anterior pero sin contar con el uso del metodo pipe(), quedando de la siguiente manera:</p>
+<pre><code class="language-typescript"><span class="hl-6">function</span><span class="hl-1"> </span><span class="hl-5">nopipe</span><span class="hl-1">(</span><span class="hl-2">filename</span><span class="hl-1">: </span><span class="hl-8">string</span><span class="hl-1">, </span><span class="hl-2">word</span><span class="hl-1">: </span><span class="hl-8">string</span><span class="hl-1">){</span><br/><span class="hl-1">  </span><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-2">fs</span><span class="hl-1">.</span><span class="hl-5">existsSync</span><span class="hl-1">(</span><span class="hl-2">filename</span><span class="hl-1">)){</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">cat</span><span class="hl-1"> = </span><span class="hl-2">child</span><span class="hl-1">.</span><span class="hl-5">spawn</span><span class="hl-1">(</span><span class="hl-3">&#39;cat&#39;</span><span class="hl-1">, [</span><span class="hl-2">filename</span><span class="hl-1">]);</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">grep</span><span class="hl-1"> = </span><span class="hl-2">child</span><span class="hl-1">.</span><span class="hl-5">spawn</span><span class="hl-1">(</span><span class="hl-3">&#39;grep&#39;</span><span class="hl-1">, [</span><span class="hl-3">&#39;-c&#39;</span><span class="hl-1">, </span><span class="hl-2">word</span><span class="hl-1">]);</span><br/><br/><span class="hl-1">    </span><span class="hl-2">cat</span><span class="hl-1">.</span><span class="hl-2">stdout</span><span class="hl-1">.</span><span class="hl-5">on</span><span class="hl-1">(</span><span class="hl-3">&quot;data&quot;</span><span class="hl-1">, (</span><span class="hl-2">data</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">grep</span><span class="hl-1">.</span><span class="hl-2">stdin</span><span class="hl-1">.</span><span class="hl-5">write</span><span class="hl-1">(</span><span class="hl-2">data</span><span class="hl-1">);</span><br/><span class="hl-1">    });</span><br/><br/><span class="hl-1">    </span><span class="hl-2">cat</span><span class="hl-1">.</span><span class="hl-5">on</span><span class="hl-1">(</span><span class="hl-3">&quot;close&quot;</span><span class="hl-1">, () </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">grep</span><span class="hl-1">.</span><span class="hl-2">stdin</span><span class="hl-1">.</span><span class="hl-5">end</span><span class="hl-1">();</span><br/><span class="hl-1">    });</span><br/><br/><span class="hl-1">    </span><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-2">grepOutput</span><span class="hl-1"> = </span><span class="hl-3">&#39;&#39;</span><span class="hl-1">;</span><br/><span class="hl-1">    </span><span class="hl-2">grep</span><span class="hl-1">.</span><span class="hl-2">stdout</span><span class="hl-1">.</span><span class="hl-5">on</span><span class="hl-1">(</span><span class="hl-3">&#39;data&#39;</span><span class="hl-1">, (</span><span class="hl-2">piece</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">grepOutput</span><span class="hl-1"> += </span><span class="hl-2">piece</span><span class="hl-1">;</span><br/><span class="hl-1">    });</span><br/><br/><span class="hl-1">    </span><span class="hl-2">grep</span><span class="hl-1">.</span><span class="hl-5">on</span><span class="hl-1">(</span><span class="hl-3">&#39;close&#39;</span><span class="hl-1">, () </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-6">let</span><span class="hl-1"> </span><span class="hl-2">x</span><span class="hl-1">: </span><span class="hl-8">number</span><span class="hl-1"> = +</span><span class="hl-2">grepOutput</span><br/><span class="hl-1">      </span><span class="hl-0">if</span><span class="hl-1">(</span><span class="hl-2">x</span><span class="hl-1"> &gt; </span><span class="hl-4">0</span><span class="hl-1">){</span><br/><span class="hl-1">        </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">yellow</span><span class="hl-1">(</span><span class="hl-3">`La palabra </span><span class="hl-6">${</span><span class="hl-2">word</span><span class="hl-6">}</span><span class="hl-3"> se encuentra en </span><span class="hl-6">${</span><span class="hl-2">x</span><span class="hl-6">}</span><span class="hl-3"> lineas del fichero`</span><span class="hl-1">));</span><br/><span class="hl-1">      } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">`La palabra </span><span class="hl-6">${</span><span class="hl-2">word</span><span class="hl-6">}</span><span class="hl-3"> no se encuentra en el fichero`</span><span class="hl-1">));</span><br/><span class="hl-1">      }</span><br/><span class="hl-1">    });</span><br/><span class="hl-1">  } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">&#39;El fichero no existe&#39;</span><span class="hl-1">));</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span>
+</code></pre>
+<p>En esta funcion haremos lo mismo que en la anterior, definiremos los procesos y los comunicaremos pero sin el metodo pipe(), en este caso haremos una comunicacion que ira dato por dato entre el cat.stdout y el grep.stdin, al cual una vez cmpletado tendremos que cerrar mediante el cat.on(&#39;close&#39;, ()) en donde se le pondra un final a la entrada del grep en cat, despues procederemos de la misma manera que en la funcion anterior, almacenaremos la salida del grep en una variable auxiliar que despues en grep.on() mostraremos, si es mayor que 0 el numero de ocurrecias mostraremos el numero de lineas en el que se encuentra la palabra, si no entonces se mostrara que la palabra no se encuentra en el fichero.</p>
+<p>Ahora para el manejo de los argumentos por terminal he utilizado el yargs que en este caso cntaremos con dos que simplemente nos pediran el usuario junto a la ejecucion del fichero y se verian algo asi:</p>
+<pre><code class="language-typescript"><span class="hl-2">yargs</span><span class="hl-1">.</span><span class="hl-5">command</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-2">command:</span><span class="hl-1"> </span><span class="hl-3">&#39;pipe&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;Leer un fichero y hacerle grep&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">builder:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">file:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;file&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">demandOption:</span><span class="hl-1"> </span><span class="hl-6">true</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">type:</span><span class="hl-1"> </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">    </span><span class="hl-2">word:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;word&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">demandOption:</span><span class="hl-1"> </span><span class="hl-6">true</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">type:</span><span class="hl-1"> </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-5">handler</span><span class="hl-1">(</span><span class="hl-2">argv</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-6">typeof</span><span class="hl-1"> </span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">file</span><span class="hl-1"> === </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1"> &amp;&amp;</span><br/><span class="hl-1">        </span><span class="hl-6">typeof</span><span class="hl-1"> </span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">word</span><span class="hl-1"> === </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1"> &amp;&amp;</span><br/><span class="hl-1">        </span><span class="hl-2">process</span><span class="hl-1">.</span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">length</span><span class="hl-1"> == </span><span class="hl-4">5</span><span class="hl-1">) {</span><br/><span class="hl-1">        </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-5">pipe</span><span class="hl-1">(</span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">file</span><span class="hl-1">, </span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">word</span><span class="hl-1">))</span><br/><span class="hl-1">    } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">&quot;Ha intoducido un numero de parametros erroneos por encima de los permitidos, solo puede introducir 5 parametros:&quot;</span><span class="hl-1">))</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">`node ejercicio2.js pipe --file=&quot;prueba.txt&quot; --word=&quot;Hola&quot;&quot;`</span><span class="hl-1">))</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-2">yargs</span><span class="hl-1">.</span><span class="hl-5">command</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-2">command:</span><span class="hl-1"> </span><span class="hl-3">&#39;nopipe&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;Leer un fichero y hacerle grep&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">builder:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">file:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;file&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">demandOption:</span><span class="hl-1"> </span><span class="hl-6">true</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">type:</span><span class="hl-1"> </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">    </span><span class="hl-2">word:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;word&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">demandOption:</span><span class="hl-1"> </span><span class="hl-6">true</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">type:</span><span class="hl-1"> </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-5">handler</span><span class="hl-1">(</span><span class="hl-2">argv</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-6">typeof</span><span class="hl-1"> </span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">file</span><span class="hl-1"> === </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1"> &amp;&amp;</span><br/><span class="hl-1">        </span><span class="hl-6">typeof</span><span class="hl-1"> </span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">word</span><span class="hl-1"> === </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1"> &amp;&amp;</span><br/><span class="hl-1">        </span><span class="hl-2">process</span><span class="hl-1">.</span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">length</span><span class="hl-1"> == </span><span class="hl-4">5</span><span class="hl-1">) {</span><br/><span class="hl-1">        </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-5">nopipe</span><span class="hl-1">(</span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">file</span><span class="hl-1">, </span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">word</span><span class="hl-1">))</span><br/><span class="hl-1">    } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">&quot;Ha intoducido un numero de parametros erroneos por encima de los permitidos, solo puede introducir 5 parametros:&quot;</span><span class="hl-1">))</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">`node ejercicio2.js nopipe --file=&quot;prueba.txt&quot; --word=&quot;Hola&quot;&quot;`</span><span class="hl-1">))</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-2">yargs</span><span class="hl-1">.</span><span class="hl-5">parse</span><span class="hl-1">()</span>
+</code></pre>
+
+<a href="#ejercicio-3" id="ejercicio-3" style="color: inherit; text-decoration: none;">
+  <h1>Ejercicio 3</h1>
+</a>
+<p>En este ejercicio hemos de crear una aplicacion en la cual que reciba desde la línea de comandos el nombre de un usuario de la aplicación de notas.</p>
+<p>Para llevar a cabo esto he creado una funcion que nos permite observar el directorio de un usuario, el especificado por el usuario, y que nos dira si se ha modificado, creado o borrado un fichero, y lce tal que asi:</p>
+<pre><code class="language-typescript"><span class="hl-6">function</span><span class="hl-1"> </span><span class="hl-5">watcher</span><span class="hl-1">(</span><span class="hl-2">user</span><span class="hl-1">: </span><span class="hl-8">string</span><span class="hl-1">){</span><br/><span class="hl-1">  </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">&quot;Hola&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">  </span><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-2">fs</span><span class="hl-1">.</span><span class="hl-5">existsSync</span><span class="hl-1">(</span><span class="hl-3">`./database/</span><span class="hl-6">${</span><span class="hl-2">user</span><span class="hl-6">}</span><span class="hl-3">/`</span><span class="hl-1">)){</span><br/><span class="hl-1">    </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">`Se esta empezando a mirar el fichero del usuario : </span><span class="hl-6">${</span><span class="hl-2">user</span><span class="hl-6">}</span><span class="hl-3">`</span><span class="hl-1">)</span><br/><span class="hl-1">    </span><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">x</span><span class="hl-1"> = </span><span class="hl-2">fs</span><span class="hl-1">.</span><span class="hl-5">watch</span><span class="hl-1">(</span><span class="hl-3">`./database/</span><span class="hl-6">${</span><span class="hl-2">user</span><span class="hl-6">}</span><span class="hl-3">/`</span><span class="hl-1">, (</span><span class="hl-2">eventType</span><span class="hl-1">, </span><span class="hl-2">filename</span><span class="hl-1">) </span><span class="hl-6">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-0">if</span><span class="hl-1">(</span><span class="hl-2">eventType</span><span class="hl-1"> === </span><span class="hl-3">&quot;change&quot;</span><span class="hl-1">){</span><br/><span class="hl-1">          </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">`El fichero </span><span class="hl-6">${</span><span class="hl-2">filename</span><span class="hl-6">}</span><span class="hl-3"> de ha modificado`</span><span class="hl-1">);</span><br/><span class="hl-1">        }</span><span class="hl-0">else</span><span class="hl-1"> </span><span class="hl-0">if</span><span class="hl-1">( </span><span class="hl-2">eventType</span><span class="hl-1"> === </span><span class="hl-3">&quot;rename&quot;</span><span class="hl-1">){</span><br/><span class="hl-1">          </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-3">`El fichero </span><span class="hl-6">${</span><span class="hl-2">filename</span><span class="hl-6">}</span><span class="hl-3"> se ha eliminado/creado`</span><span class="hl-1">);</span><br/><span class="hl-1">        } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">          </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">`No se ha encontrado el directorio/fichero`</span><span class="hl-1">));</span><br/><span class="hl-1">        }</span><br/><span class="hl-1">      });</span><br/><span class="hl-1">  } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">&quot;No se ha podido observar el directorio porque no se encuentra ningun usuario con ese nombre&quot;</span><span class="hl-1">));</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span>
+</code></pre>
+<p>En la funcion primero comprobamos si existe el directorio del usuario especificado, si no es asi nos saltaria un erros, y despues dentro mediante el metodo watch() de la api podemos observar un fichero o directorio como es este cado y reaccionar a los eventos que ocurra, pues si se modifica algo del fichero saltara el evento &#39;change&#39; y entonces se nos mostrara el fichero que se ha modificado de todos los que haya en el directorio, y si se crea o se elimina un fichero nos saltara el evento &#39;rename&#39; y nos mostrara por pantalla el fichero que se ha borrado o creado dentro del directorio.</p>
+<p>Para llevar a cabo esto mediante yargs procesamos los parametros especificados por linea de comando de la siguiente manera:</p>
+<pre><code class="language-typescript"><span class="hl-2">yargs</span><span class="hl-1">.</span><span class="hl-5">command</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-2">command:</span><span class="hl-1"> </span><span class="hl-3">&#39;ver&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;Observar una nota&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">builder:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">user:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">describe:</span><span class="hl-1"> </span><span class="hl-3">&#39;Usuario&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">demandOption:</span><span class="hl-1"> </span><span class="hl-6">true</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">type:</span><span class="hl-1"> </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-5">handler</span><span class="hl-1">(</span><span class="hl-2">argv</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">if</span><span class="hl-1"> (</span><span class="hl-6">typeof</span><span class="hl-1"> </span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">user</span><span class="hl-1"> === </span><span class="hl-3">&#39;string&#39;</span><span class="hl-1">) {</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-5">watcher</span><span class="hl-1">(</span><span class="hl-2">argv</span><span class="hl-1">.</span><span class="hl-2">user</span><span class="hl-1">))</span><br/><span class="hl-1">    } </span><span class="hl-0">else</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-5">log</span><span class="hl-1">(</span><span class="hl-2">chalk</span><span class="hl-1">.</span><span class="hl-5">red</span><span class="hl-1">(</span><span class="hl-3">&quot;Introduce un usuario valido.&quot;</span><span class="hl-1">))</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-2">yargs</span><span class="hl-1">.</span><span class="hl-5">parse</span><span class="hl-1">()</span>
+</code></pre>
+<p>Aqui procesaremos que se nos pase un usuario junto a la ejecucion del programa para poder observar el directorio d dicho usuario en su totalidad, si no pusieramos nada nos saltaria un error como ahi se muestra</p>
+<p><strong>¿Cómo haría para mostrar, no solo el nombre, sino también el contenido del fichero, en el caso de que haya sido creado o modificado?</strong>
+Para mostrar el contenido del fichero podriamos hacer uso del cat, creandolo con el proceso hijo spawm, pues podriamos mirar y pasarle al cat el fichero que se este modificando y al pasarlo por el cat se nos mostraria su contenido modificado, o con el que se haya creado el fichero, asi pues tendriamos que hacer algo asi:</p>
+<pre><code class="language-typescript"><span class="hl-6">const</span><span class="hl-1"> </span><span class="hl-7">cat</span><span class="hl-1"> = </span><span class="hl-2">child</span><span class="hl-1">.</span><span class="hl-5">spawn</span><span class="hl-1">(</span><span class="hl-3">&#39;cat&#39;</span><span class="hl-1">, [</span><span class="hl-2">filename</span><span class="hl-1">])</span><br/><br/><span class="hl-2">cat</span><span class="hl-1">.</span><span class="hl-2">stdout</span><span class="hl-1">.</span><span class="hl-5">pipe</span><span class="hl-1">(</span><span class="hl-2">process</span><span class="hl-1">.</span><span class="hl-2">stdout</span><span class="hl-1">)</span>
+</code></pre>
+<p>y esto lo meteriamos dentro de los if de change y rename para que cuando ocurra un if con su evento se nos muestre el interior de el propio fichero.</p>
+<p><strong>¿Cómo haría para que no solo se observase el directorio de un único usuario sino todos los directorios correspondientes a los diferentes usuarios de la aplicación de notas?</strong></p>
+<p>Para que se observace no solo el directorio del usuario habria que especificar el path del directorio entero, en mi caso ./database/ y asi se quedaria mirando a todos los cambios que ocurran por debajo de ese directorio y tambien hemos de poner la opcion de recursive en el metodo watch() ya que nos permitira mirar tanto directorios como subdirectorios dentro del directorio ./database</p>
 </div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-function"><a href="modules.html#add" class="tsd-kind-icon">add</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
